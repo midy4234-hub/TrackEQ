@@ -4,14 +4,33 @@ cmake_minimum_required(VERSION 3.22)
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum macOS version")
 set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures")
 
+# Windows: C++ ランタイムを組み込む (VC++ 再頒布可能パッケージが無い PC でも読み込める)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC runtime")
+
 project(TrackEQ VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# PluginLab (共通の見た目 LabLook.h と検証ハーネス LabTest.h)
-set(LAB_DIR "/Users/midy9969nect/Desktop/Claude Code/PluginLab" CACHE PATH "PluginLab")
-set(LAB_COMMON "${LAB_DIR}/juce/common")
+if(MSVC)
+    # ソースは UTF-8 (日本語コメント入り)。指定しないと MSVC が CP932 として読み、C4819 や誤コンパイルになる
+    add_compile_options(/utf-8)
+endif()
+
+# PluginLab の共通部品 (LabLook.h / LabTest.h)。隣に PluginLab があればそれを、無ければ同梱の lab/ を使う
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../PluginLab/juce/common/LabTest.h")
+    set(LAB_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../PluginLab/juce/common")
+else()
+    set(LAB_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/lab")
+endif()
+
+# ビルド後に VST3 フォルダへコピーするか。Windows のコピー先は管理者権限が要るので既定 OFF
+if(APPLE)
+    set(_lab_install_default ON)
+else()
+    set(_lab_install_default OFF)
+endif()
+option(LAB_INSTALL "Copy the plugin to the system VST3 folder after build" ${_lab_install_default})
 
 # 共有の JUCE (../_deps/JUCE) があればそれを使う。無ければ取得する
 set(_juce_shared "${CMAKE_CURRENT_SOURCE_DIR}/../_deps/JUCE")
@@ -25,9 +44,6 @@ else()
         GIT_SHALLOW TRUE)
     FetchContent_MakeAvailable(JUCE)
 endif()
-
-# 検証用ビルドなどでインストールしたくないときは -DLAB_INSTALL=OFF
-option(LAB_INSTALL "Copy the plugin to ~/Library/Audio/Plug-Ins after build" ON)
 
 juce_add_plugin(TrackEQ
     PRODUCT_NAME "TrackEQ"

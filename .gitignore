@@ -3,3 +3,5 @@ build-test/
 renders/*.wav
 .DS_Store
 *.log
+build-dist/
+dist/
