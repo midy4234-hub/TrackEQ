@@ -1,0 +1,5 @@
+build/
+build-test/
+renders/*.wav
+.DS_Store
+*.log
