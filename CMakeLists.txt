@@ -45,13 +45,21 @@ else()
     FetchContent_MakeAvailable(JUCE)
 endif()
 
+# AU は Mac だけ
+if(APPLE)
+    set(_formats VST3 AU)
+else()
+    set(_formats VST3)
+endif()
+
 juce_add_plugin(TrackEQ
     PRODUCT_NAME "TrackEQ"
     COMPANY_NAME "MIDy"
     BUNDLE_ID "com.midy.trackeq"
     PLUGIN_MANUFACTURER_CODE "MIDy"
     PLUGIN_CODE "Trck"
-    FORMATS VST3
+    FORMATS ${_formats}
+    AU_MAIN_TYPE kAudioUnitType_Effect
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE

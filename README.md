@@ -1,4 +1,4 @@
-# TrackEQ — 周波数方向にも追従するダイナミック EQ (VST3)
+# TrackEQ — 周波数方向にも追従するダイナミック EQ (VST3 / AU)
 
 ![TrackEQ](renders/ui.png)
 
@@ -8,12 +8,13 @@
 
 Made with Claude Code. Provided as-is. Bug reports via Issues are welcome, but replies and fixes are not promised. Pull requests are not accepted. Licensed under AGPLv3.
 
-**ダウンロード**: Releases に Mac 版 (Intel / Apple Silicon 両対応) と Windows 版 (x64) の zip があります。
+**ダウンロード**: Releases に Mac 版 (VST3 と AU、Intel / Apple Silicon 両対応) と Windows 版 (x64) の zip があります。
 
-- Mac: `TrackEQ.vst3` を `~/Library/Audio/Plug-Ins/VST3/` に入れる。署名していないので、入れたあとターミナルで
+- Mac: `TrackEQ.vst3` を `~/Library/Audio/Plug-Ins/VST3/` に、AU を使うなら `TrackEQ.component` を `~/Library/Audio/Plug-Ins/Components/` に入れる。署名していないので、入れたあとターミナルで (入れたものだけ)
 
   ```
   xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/TrackEQ.vst3
+  xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/Components/TrackEQ.component
   ```
 
 - Windows: `TrackEQ.vst3` フォルダごと `C:\Program Files\Common Files\VST3\` に入れる
